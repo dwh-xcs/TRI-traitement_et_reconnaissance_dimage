@@ -1,0 +1,854 @@
+/* Variáveis CSS para facilitar a manutenção */
+:root {
+    --primary-color: #000;
+    --secondary-color: #111;
+    --accent-color: #00c4cc;
+    --text-color: #fff;
+    --light-text-color: #ccc;
+    --font-mono: 'Courier New', Courier, monospace;
+}
+
+/* Reset básico para remover margens e paddings padrão do navegador */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Garante que padding e bordas não aumentem o tamanho do elemento */
+}
+
+body {
+    font-family: var(--font-mono);
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    line-height: 1.6; /* Melhorar a legibilidade do texto */
+}
+
+/* Estilos do Cabeçalho */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: var(--primary-color);
+    border-bottom: 1px solid rgba(0, 196, 204, 0.2); /* Linha sutil para separar do conteúdo */
+    position: sticky; /* Fixa o cabeçalho no topo ao rolar */
+    top: 0;
+    z-index: 1000; /* Garante que o cabeçalho fique acima de outros elementos */
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.2em; /* Tamanho um pouco maior para o logo */
+    color: var(--text-color);
+    text-transform: uppercase; /* Deixa o logo em maiúsculas */
+    letter-spacing: 1px; /* Espaçamento entre letras */
+}
+
+/* Estilos da Navegação */
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 25px; /* Mais espaçamento entre os links */
+    font-size: 1.1em; /* Tamanho da fonte ligeiramente maior */
+    transition: color 0.3s ease, font-size 0.3s ease; /* Transições suaves */
+    position: relative; /* Para o efeito de sublinhado */
+}
+
+nav a.active {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-size: 1.2em; /* Destacar a aba ativa */
+}
+
+/* Efeito de hover e sublinhado */
+nav a:not(.active):hover {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+nav a::after { /* Efeito de sublinhado animado */
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease-in-out;
+}
+
+nav a:hover::after,
+nav a.active::after {
+    width: 100%;
+}
+
+
+/* Ícone de Usuário */
+.user-icon {
+    font-size: 22px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    color: var(--primary-color);
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.user-icon:hover {
+    transform: scale(1.1); /* Efeito de zoom no hover */
+}
+
+/* Estilos das Seções Gerais */
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    padding: 60px 40px; /* Mais padding para um visual mais arejado */
+    max-width: 1200px;
+    margin: auto;
+    width: 100%;
+}
+
+/* --- Seção 1: Reconhecimento e Processamento de Imagens --- */
+.section-1 {
+    gap: 50px;
+    min-height: 100vh; /* Faz a primeira seção ocupar a altura total da viewport */
+    justify-content: space-between; /* Distribui texto e imagem */
+}
+
+.section-1 .text {
+    flex: 1;
+    padding-right: 30px; /* Espaço entre texto e imagem */
+}
+
+.section-1 h1 {
+    font-size: 3.8em; /* Ajuste para melhor impacto visual */
+    margin-bottom: 25px;
+    color: var(--accent-color);
+    line-height: 1.2;
+}
+
+.section-1 p {
+    font-size: 1.3em;
+    line-height: 1.7;
+    margin-bottom: 30px;
+    max-width: 550px; /* Controla a largura do parágrafo */
+}
+
+.section-1 .image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.section-1 img {
+    max-width: 100%;
+    border-radius: 15px; /* Bordas mais arredondadas */
+    box-shadow: 0 0 30px rgba(0, 196, 204, 0.5); /* Sombra mais destacada */
+}
+
+/* Botão CTA na Section 1 */
+.button-cta {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 15px 35px; /* Mais padding para o botão */
+    background-color: var(--accent-color);
+    color: var(--primary-color) !important; /* !important para garantir a cor */
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.button-cta:hover {
+    background-color: #009999;
+    transform: translateY(-3px); /* Pequeno efeito de elevação */
+    box-shadow: 0 5px 15px rgba(0, 196, 204, 0.4);
+}
+
+/* --- Seção 2: O que você pode fazer aqui --- */
+.section-2 {
+    background: url('https://images.unsplash.com/photo-1581090700227-1e8f9a325a4e') no-repeat center center/cover;
+    color: var(--text-color);
+    flex-direction: column;
+    text-align: center;
+    background-attachment: fixed; /* Efeito parallax */
+    padding: 80px 40px; /* Mais padding para espaçamento */
+    min-height: 85vh; /* Garante que esta seção ocupe boa parte da tela */
+    justify-content: center;
+    align-items: center;
+}
+
+.section-2 h2 {
+    background-color: rgba(0, 0, 0, 0.8); /* Um pouco mais opaco */
+    padding: 25px 50px; /* Mais padding */
+    border-radius: 12px; /* Borda mais arredondada */
+    font-size: 3em; /* Título maior */
+    color: var(--accent-color);
+    margin-bottom: 50px; /* Mais espaço abaixo do título */
+    box-shadow: 0 8px 20px rgba(0, 196, 204, 0.3); /* Sombra mais pronunciada */
+}
+
+.section-2 ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 0;
+    background-color: rgba(0, 0, 0, 0.65); /* Fundo da lista um pouco mais opaco */
+    border-radius: 15px;
+    padding: 50px; /* Mais padding interno */
+    box-shadow: 0 0 30px rgba(0, 196, 204, 0.5);
+    
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Duas colunas de largura igual */
+    gap: 35px; /* Espaçamento maior entre os itens */
+    max-width: 1000px;
+    width: 100%;
+}
+
+.section-2 li {
+    background-color: rgba(17, 17, 17, 0.9); /* Cor de fundo para cada item, mais opaca */
+    padding: 30px; /* Mais padding interno */
+    border-radius: 10px;
+    font-size: 1.4em; /* Tamanho da fonte ligeiramente maior */
+    color: var(--text-color);
+    text-align: center; /* Centraliza o texto dentro do bloco */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Sombra sutil em cada item */
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px; /* Garante uma altura mínima consistente para todos os blocos */
+    font-weight: bold; /* Deixa o texto do item mais forte */
+}
+
+.section-2 li:hover {
+    transform: translateY(-10px); /* Elevação mais pronunciada ao passar o mouse */
+    background-color: rgba(34, 34, 34, 1); /* Quase opaco no hover */
+    box-shadow: 0 10px 25px rgba(0, 196, 204, 0.7); /* Sombra mais forte e colorida */
+}
+/* --- Fim da Seção 2 --- */
+
+
+/* --- Seção 3: Envio de Arquivos --- */
+.section-3 {
+    flex-direction: column;
+    align-items: center; /* Centraliza o conteúdo horizontalmente */
+    min-height: 100vh; /* Faz esta seção ocupar a altura total da viewport */
+    justify-content: center; /* Centraliza o conteúdo verticalmente */
+    padding-bottom: 80px; /* Espaço antes do footer */
+    text-align: center; /* Centraliza o texto de introdução */
+}
+
+.section-3 h2 {
+    margin-bottom: 25px;
+    font-size: 3em;
+    color: var(--accent-color);
+}
+
+.section-3 p {
+    margin-bottom: 30px;
+    max-width: 800px; /* Aumenta a largura do parágrafo */
+    line-height: 1.7;
+    font-size: 1.1em;
+}
+
+.select-group {
+    display: flex;
+    gap: 25px; /* Mais espaçamento entre os selects */
+    margin-bottom: 40px; /* Mais espaço abaixo dos selects */
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%; /* Ocupa a largura total disponível dentro da seção */
+}
+
+.select-group select {
+    padding: 15px 20px; /* Mais padding */
+    border-radius: 10px; /* Mais arredondado */
+    border: 2px solid var(--accent-color); /* Borda mais visível */
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    width: 300px; /* Um pouco mais largo */
+    font-size: 1.1em;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300c4cc'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center; /* Seta um pouco mais para a direita */
+    background-size: 1.2em; /* Seta um pouco maior */
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.select-group select:hover,
+.select-group select:focus {
+    border-color: #00e0e0;
+    outline: none;
+    background-color: #2a2a2a;
+    box-shadow: 0 0 15px rgba(0, 196, 204, 0.3);
+}
+
+
+.upload-section {
+    display: flex;
+    gap: 50px; /* Mais espaçamento entre as caixas de upload */
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%; /* Ocupa a largura total disponível dentro da seção */
+}
+
+.upload-box {
+    width: 320px; /* Um pouco maior */
+    height: 320px; /* Um pouco maior */
+    border: 3px dashed var(--accent-color); /* Borda mais grossa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: var(--light-text-color);
+    cursor: pointer;
+    background-color: var(--secondary-color);
+    border-radius: 15px; /* Mais arredondado */
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    text-align: center;
+    padding: 30px; /* Mais padding interno */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Sombra inicial */
+}
+
+.upload-box:hover {
+    background-color: #222;
+    border-color: #00e0e0;
+    transform: translateY(-5px); /* Elevação suave */
+    box-shadow: 0 10px 25px rgba(0, 196, 204, 0.6); /* Sombra no hover */
+}
+
+.upload-box i {
+    font-size: 3.5em; /* Ícone maior */
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+.upload-box p {
+    font-size: 1.2em;
+    line-height: 1.5;
+    margin-bottom: 0;
+    font-weight: bold; /* Texto mais forte */
+}
+
+.upload-box img { /* Estilo para a pré-visualização da imagem (se o JS for usado) */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+/* --- Rodapé --- */
+footer {
+    background-color: var(--secondary-color);
+    color: var(--light-text-color);
+    padding: 50px; /* Mais padding no rodapé */
+    text-align: center;
+    border-top: 1px solid rgba(0, 196, 204, 0.2);
+}
+
+footer p {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+footer .social-icons {
+    margin-top: 25px;
+}
+
+footer a {
+    color: var(--light-text-color);
+    margin: 0 15px; /* Mais espaçamento entre os ícones */
+    font-size: 26px; /* Ícones maiores */
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+footer a:hover {
+    color: var(--accent-color);
+    transform: translateY(-4px); /* Efeito de elevação mais pronunciado */
+}
+
+/* Container para os botões de ação na Seção 3 */
+.action-buttons {
+    display: flex;
+    gap: 30px; /* Espaçamento entre os botões */
+    margin-top: 50px; /* Espaçamento do bloco de uploads */
+    justify-content: center; /* Centraliza os botões */
+    flex-wrap: wrap; /* Permite que os botões quebrem linha em telas pequenas */
+    width: 100%; /* Ocupa a largura total para centralização */
+}
+
+/* Estilos para o botão de Limpar Caixas (já existente, só o nome foi ajustado para "Limpar") */
+.button-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 25px;
+    background-color: var(--secondary-color);
+    color: var(--light-text-color);
+    border: 2px solid var(--light-text-color);
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.button-clear:hover {
+    background-color: #333; /* Um pouco mais escuro que secondary */
+    color: #fff; /* Texto branco */
+    border-color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2); /* Sombra mais neutra */
+}
+
+.button-clear i {
+    font-size: 1.2em;
+    color: inherit;
+}
+
+/* NOVO: Estilos para o botão de Iniciar Processo (com destaque azul) */
+.button-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 35px; /* Mais padding para destaque */
+    background-color: var(--accent-color); /* Cor azul de destaque */
+    color: var(--primary-color); /* Texto escuro */
+    border: none; /* Sem borda para um visual mais sólido */
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1em; /* Tamanho da fonte maior */
+    cursor: pointer;
+    text-transform: uppercase; /* Texto em maiúsculas */
+    letter-spacing: 0.5px; /* Espaçamento entre letras */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.button-primary:hover {
+    background-color: #009999; /* Um tom um pouco mais escuro do azul */
+    transform: translateY(-5px); /* Elevação mais pronunciada */
+    box-shadow: 0 8px 20px rgba(0, 196, 204, 0.6); /* Sombra azul intensa */
+}
+
+.button-primary i {
+    font-size: 1.3em; /* Ícone um pouco maior */
+    color: inherit;
+}
+
+.section-4 {
+    flex-direction: column; /* Conteúdo principal em coluna */
+    min-height: 90vh; /* Ocupa boa parte da tela */
+    justify-content: flex-start; /* Alinha conteúdo ao topo */
+    align-items: center; /* Centraliza horizontalmente */
+    padding-top: 80px; /* Mais padding no topo */
+    padding-bottom: 80px;
+    background-color: var(--primary-color); /* Fundo preto sólido */
+    
+    /* Por padrão, esta seção estará oculta. O JavaScript a tornará visível. */
+    display: flex; /* Oculta a seção por padrão  none para oculto flex para mostrar*/
+    opacity: 1; /* Começa invisível para transição */
+    transition: opacity 0.5s ease-in-out; /* Transição suave para aparecer */
+}
+
+/* Classe para mostrar a seção com JS */
+.section-4.visible {
+    display: flex; /* Muda para flex para mostrar */
+    opacity: 1; /* Torna visível */
+}
+
+.section-4 .section-title {
+    width: 100%;
+    max-width: 1000px; /* Alinha com o max-width do main content */
+    margin-bottom: 50px; /* Espaço abaixo do título e texto introdutório */
+    text-align: left; /* Título e texto introdutório alinhados à esquerda */
+}
+
+.section-4 .section-title h2 {
+    font-size: 3em;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.section-4 .section-title p {
+    font-size: 1.1em;
+    line-height: 1.7;
+    color: var(--light-text-color);
+}
+
+.section-4 .results-content {
+    display: flex;
+    flex-direction: row; /* Imagem e detalhes lado a lado */
+    gap: 40px; /* Espaçamento entre as duas colunas */
+    width: 100%;
+    max-width: 1000px; /* Largura máxima do conteúdo */
+    background-color: var(--secondary-color); /* Fundo da área de resultados */
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    align-items: flex-start; /* Alinha o conteúdo ao topo das colunas */
+}
+
+.section-4 .image-display-box {
+    flex: 2; /* Ocupa 2/3 do espaço */
+    background-color: #222; /* Fundo da caixa da imagem */
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 350px; /* Altura mínima para a caixa da imagem */
+    overflow: hidden; /* Garante que a imagem não vaze */
+    box-shadow: inset 0 0 15px rgba(0, 196, 204, 0.2); /* Sombra interna para destaque */
+    padding: 15px; /* Padding para a imagem */
+}
+
+.section-4 .image-display-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+    border-radius: 8px;
+}
+
+/* Se você usar apenas o texto 'img' dentro da caixa da imagem */
+.section-4 .image-display-box p {
+    font-size: 2em;
+    color: var(--light-text-color);
+}
+
+
+.section-4 .details-column {
+    flex: 1; /* Ocupa 1/3 do espaço */
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espaçamento entre os blocos de detalhes */
+}
+
+.section-4 .processing-methods,
+.section-4 .processing-results {
+    background-color: #222; /* Fundo para os blocos de texto */
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.section-4 .processing-methods h3,
+.section-4 .processing-results h3 {
+    font-size: 0.8em;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.section-4 .processing-methods p,
+.section-4 .processing-results p {
+    font-size: 0.8em;
+    line-height: 1.6;
+    color: var(--light-text-color);
+    margin-bottom: 10px;
+}
+.section-4 .processing-results p span {
+    color: var(--accent-color); /* Destaca a porcentagem e o número */
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+
+.section-4 .results-buttons {
+    display: flex;
+    flex-direction: column; /* Botões um abaixo do outro */
+    gap: 15px; /* Espaçamento entre os botões */
+    margin-top: 20px; /* Espaço acima dos botões */
+}
+
+/* Reutilizando estilos de botões existentes para consistência */
+.section-4 .results-buttons .button-clear {
+    width: 100%; /* Ocupa a largura total */
+    padding: 12px 20px;
+    font-size: 1em;
+    margin-top: 0; /* Remove a margem superior extra se herdar */
+    border-color: var(--light-text-color); /* Para ser menos chamativo que o primário */
+    color: var(--light-text-color);
+    background-color: var(--secondary-color);
+}
+.section-4 .results-buttons .button-clear:hover {
+    background-color: #333;
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+.section-4 .results-buttons .button-primary {
+    width: 100%; /* Ocupa a largura total */
+    padding: 15px 20px;
+    font-size: 1.1em;
+    margin-top: 0; /* Remove a margem superior extra se herdar */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+
+/* --- Media Queries para Responsividade (Ajustes Finais) --- */
+@media (max-width: 1024px) {
+    .section-1 h1 {
+        font-size: 3em;
+    }
+    .section-1 p {
+        font-size: 1.1em;
+    }
+    .section-2 h2 {
+        font-size: 2.5em;
+    }
+    .section-2 ul {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ajuste para telas intermediárias */
+        gap: 25px;
+        padding: 40px;
+    }
+    .section-2 li {
+        font-size: 1.2em;
+        min-height: 130px;
+    }
+    .section-3 h2 {
+        font-size: 2.5em;
+    }
+    .select-group select, .upload-box {
+        width: 280px;
+        height: 280px;
+    }
+    .button-clear {
+        margin-top: 40px;
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+    .action-buttons {
+        flex-direction: column; /* Botões um abaixo do outro em telas menores */
+        gap: 20px;
+        margin-top: 40px;
+    }
+    .button-clear, .button-primary {
+        width: 90%; /* Ocupa a largura quase total */
+        max-width: 300px; /* Limita o tamanho em telas maiores */
+        font-size: 1em;
+        padding: 12px 20px;
+    }
+    .section-4 .section-title {
+        text-align: center; /* Centraliza o título e texto introdutório em telas menores */
+    }
+    .section-4 .results-content {
+        flex-direction: column; /* Pilha a imagem e detalhes em colunas */
+        gap: 30px;
+        padding: 30px;
+    }
+    .section-4 .image-display-box,
+    .section-4 .details-column {
+        flex: none; /* Remove o flex para que ocupem 100% da largura */
+        width: 100%;
+    }
+    .section-4 .image-display-box {
+        min-height: 300px; /* Ajusta altura mínima da imagem */
+    }
+    .section-4 .processing-methods,
+    .section-4 .processing-results {
+        padding: 20px;
+    }
+    
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        padding: 15px 20px;
+    }
+    .logo {
+        font-size: 1.1em;
+        margin-bottom: 15px;
+    }
+    nav {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    nav a {
+        margin: 8px 15px;
+        font-size: 1em;
+    }
+    nav a.active {
+        font-size: 1.1em;
+    }
+    .user {
+        margin-top: 15px;
+    }
+    section {
+        padding: 40px 20px;
+        flex-direction: column; /* Todas as seções em coluna para mobile */
+        text-align: center; /* Centraliza texto em todas as seções */
+        min-height: auto; /* Deixa a altura se ajustar ao conteúdo em mobile */
+    }
+    .section-1 {
+        gap: 30px;
+    }
+    .section-1 .text {
+        padding-right: 0;
+    }
+    .section-1 h1 {
+        font-size: 2.5em;
+    }
+    .section-1 p {
+        font-size: 1em;
+    }
+    .section-1 img {
+        max-width: 90%;
+        margin-top: 30px;
+    }
+
+    .section-2 h2 {
+        font-size: 2em;
+        padding: 15px 25px;
+        margin-bottom: 35px;
+    }
+    .section-2 ul {
+        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+        padding: 30px;
+        gap: 20px;
+    }
+    .section-2 li {
+        font-size: 1.1em;
+        padding: 20px;
+        min-height: 120px;
+    }
+
+    .section-3 h2 {
+        font-size: 2em;
+    }
+    .section-3 p {
+        font-size: 1em;
+        max-width: 90%;
+    }
+    .select-group, .upload-section {
+        flex-direction: column;
+        gap: 25px;
+    }
+    .select-group select, .upload-box {
+        width: 95%; /* Ocupa mais largura em telas muito pequenas */
+        max-width: 350px; /* Limita o tamanho máximo */
+        height: 280px; /* Ajusta altura para caber melhor */
+    }
+    .upload-box i {
+        font-size: 3em;
+    }
+    .button-clear {
+        margin-top: 40px;
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+    .button-clear, .button-primary {
+        width: 100%; /* Ocupa a largura total em telas muito pequenas */
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+        .section-4 {
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+    .section-4 .section-title h2 {
+        font-size: 2.5em;
+    }
+    .section-4 .section-title p {
+        font-size: 1em;
+    }
+    .section-4 .results-content {
+        padding: 25px;
+    }
+    .section-4 .image-display-box {
+        min-height: 250px;
+    }
+    .section-4 .processing-methods h3,
+    .section-4 .processing-results h3 {
+        font-size: 1.1em;
+    }
+    .section-4 .processing-methods p,
+    .section-4 .processing-results p {
+        font-size: 0.9em;
+    }
+    .section-4 .results-buttons .button-clear,
+    .section-4 .results-buttons .button-primary {
+        padding: 12px 15px;
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1em;
+    }
+    nav a {
+        margin: 5px 8px;
+        font-size: 0.9em;
+    }
+    nav a.active {
+        font-size: 1em;
+    }
+    .section-1 h1 {
+        font-size: 2em;
+    }
+    .section-1 p {
+        font-size: 0.9em;
+    }
+    .button-cta {
+        padding: 12px 25px;
+        font-size: 0.9em;
+    }
+    .section-2 h2 {
+        font-size: 1.7em;
+        padding: 10px 20px;
+    }
+    .section-2 li {
+        font-size: 1em;
+        min-height: 100px;
+    }
+    .section-3 h2 {
+        font-size: 1.8em;
+    }
+    .select-group select, .upload-box {
+        width: 100%; /* Ocupa a largura total em telas muito pequenas */
+        height: 250px;
+    }
+    .upload-box i {
+        font-size: 2.5em;
+    }
+    footer {
+        padding: 30px 15px;
+    }
+    footer a {
+        font-size: 22px;
+        margin: 0 10px;
+    }
+    .button-clear, .button-primary {
+        width: 100%; /* Ocupa a largura total em telas muito pequenas */
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+    .section-4 .section-title h2 {
+        font-size: 2em;
+    }
+    .section-4 .section-title p {
+        font-size: 0.9em;
+    }
+    .section-4 .results-content {
+        gap: 20px;
+        padding: 20px;
+    }
+    .section-4 .image-display-box {
+        min-height: 200px;
+    }
+}

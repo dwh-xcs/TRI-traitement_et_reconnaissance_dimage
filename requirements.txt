@@ -1,0 +1,4 @@
+face_recognition
+opencv-python
+numpy==1.24.4
+protobuf==5.29.1
