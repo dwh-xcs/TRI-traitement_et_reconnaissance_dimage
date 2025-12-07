@@ -4,9 +4,8 @@ let lastSpoken = "";
 let lastTime = 0;
 const SPEECH_INTERVAL = 2000;
 const CONFIDENCE_DRAW = 0.6; // Limiar para desenhar (visível na tela)
-const CONFIDENCE_SPEAK = 0.6; // Limiar para falar/análise estática
+const CONFIDENCE_SPEAK = 0.6; // Limiar para falar/análise estática (Ajustado de 0.7 para 0.65 para maior sensibilidade)
 let isDetecting = false; // Flag para prevenir chamadas de detecção concorrentes
-let lastUtterance = null; // 🚨 NOVO: Armazena a última utterance para evitar garbage collection
 
 // Variáveis de Controle de Câmera
 let usandoCameraFrontal = false;
@@ -34,9 +33,6 @@ async function iniciarCamera() {
         streamAtual = await navigator.mediaDevices.getUserMedia(constraints);
 
         video = document.getElementById("webcam");
-        canvas = document.getElementById('canvas');
-        ctx = canvas.getContext('2d');
-        
         video.srcObject = streamAtual;
 
         // Garante que a detecção comece apenas após o vídeo ser carregado
@@ -64,6 +60,9 @@ async function init() {
     model = await cocoSsd.load();
     document.getElementById('status').innerText = 'Model loaded ✅. Starting detection...';
 
+    canvas = document.getElementById('canvas');
+    ctx = canvas.getContext('2d');
+
     // Inicia a câmera
     iniciarCamera();
 }
@@ -77,10 +76,6 @@ async function detectFrame() {
         return;
     }
     
-    // Oculta o vídeo, exibe apenas o canvas com as predições e o feed do vídeo desenhado
-    document.getElementById("webcam").style.display = 'none';
-    document.getElementById("canvas").style.display = 'block';
-
     isDetecting = true; // Define como 'ocupado'
     
     try {
@@ -99,7 +94,6 @@ async function detectFrame() {
 
 // 4. DESENHO DAS CAIXAS DELIMITADORAS
 function drawPredictions(predictions) {
-    // Desenha o frame do vídeo primeiro
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
@@ -133,19 +127,14 @@ function drawPredictions(predictions) {
 
 // 5. FEEDBACK POR ÁUDIO (Speech Synthesis)
 function speakObjects(predictions) {
-    // Garante que apenas as classes detectadas acima do limiar sejam consideradas
     const names = [...new Set(predictions.filter(p => p.score >= CONFIDENCE_SPEAK).map(p => p.class))];
     if (names.length === 0) return;
 
     const sentence = "Detected " + names.join(" and ");
     const now = Date.now();
     
-    // Verifica se o tempo passou E se o motor de fala NÃO ESTÁ ATIVO
+    // Verifica se o tempo passou E se o motor de fala não está atualmente ocupado
     if (sentence !== lastSpoken && now - lastTime > SPEECH_INTERVAL && !speechSynthesis.speaking) {
-        
-        // Cancela qualquer fala ativa ou pendente antes de iniciar uma nova
-        speechSynthesis.cancel(); 
-        
         const utterance = new SpeechSynthesisUtterance(sentence);
         utterance.lang = 'en-US'; 
         
@@ -153,10 +142,6 @@ function speakObjects(predictions) {
              speechSynthesis.speak(utterance);
              lastSpoken = sentence;
              lastTime = now;
-             
-             // 🚨 CORREÇÃO: Armazena a referência para a utterance, evitando o descarte pelo GC
-             lastUtterance = utterance; 
-             
         } catch (e) {
              console.warn("Speech synthesis failed or was interrupted.", e);
         }
@@ -177,8 +162,10 @@ async function analyzeStaticImage(imgElement, statusElement) {
     // Roda a detecção UMA VEZ na imagem
     const predictions = await model.detect(imgElement);
 
-    // Usa CONFIDENCE_SPEAK
+    // Usa CONFIDENCE_SPEAK (agora 0.6)
     const names = [...new Set(predictions.filter(p => p.score >= CONFIDENCE_SPEAK).map(p => p.class))];
+    
+    // ... (restante da lógica de áudio e atualização de status, que pode permanecer a mesma)
     
     let resultText;
     if (names.length > 0) {
@@ -188,13 +175,8 @@ async function analyzeStaticImage(imgElement, statusElement) {
         const utterance = new SpeechSynthesisUtterance(sentence);
         utterance.lang = 'en-US'; 
         
-        // Cancela antes de falar sobre a imagem estática
-        speechSynthesis.cancel();
-        
         try {
              speechSynthesis.speak(utterance);
-             // 🚨 CORREÇÃO: Armazena a referência para a utterance.
-             lastUtterance = utterance; 
         } catch (e) {
              console.warn("Speech synthesis failed or was interrupted.", e);
         }
@@ -204,34 +186,6 @@ async function analyzeStaticImage(imgElement, statusElement) {
     }
 
     statusElement.innerText = resultText;
-}
-
-// NOVO: Função para Capturar a Tela Inteira e Fazer o Download (Requer html2canvas no HTML)
-async function captureScreenAndDownload() {
-    const element = document.querySelector('.camera-wrapper'); 
-
-    speechSynthesis.cancel(); 
-    
-    // Nota: O html2canvas precisa estar linkado no seu index.html para esta função operar.
-    const canvas = await html2canvas(element, {
-        allowTaint: true, 
-        useCORS: true,    
-        backgroundColor: '#783A92',
-    });
-
-    const dataUrl = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.download = 'TRI_screenshot_' + new Date().toISOString().slice(0, 10) + '.png';
-    link.href = dataUrl;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    document.getElementById('status').innerText = 'Screenshot captured! Downloading...';
-    setTimeout(() => {
-        // Isso assume que o detectFrame está rodando e irá atualizar o status logo.
-    }, 2000);
 }
 
 
@@ -252,7 +206,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const analyzedImage = document.getElementById("analyzed-image");
     const staticStatus = document.getElementById("static-status");
     const closeBtn = document.getElementById("close-static-view");
-    const captureBtn = document.getElementById("captureBtn"); // Pega o botão de captura
     
     const menuBtn = document.getElementById("menu-btn");
     const menuDropdown = document.getElementById("menu-dropdown");
@@ -320,20 +273,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // 6.5. Fechar visualização estática e reiniciar a câmera
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
-            // 1. Oculta overlay
-            staticDisplay.style.display = 'none';
-            // 2. Mostra elementos da câmera
-            document.getElementById("canvas").style.display = 'block';
-            document.getElementById("webcam").style.display = 'block';
-            // 3. Reinicia a câmera
-            init();
-        });
-    }
-    
-    // 6.6. Listener para o Botão de Captura (Tirar Print)
-    if (captureBtn) {
-        captureBtn.addEventListener('click', () => {
-            captureScreenAndDownload(); 
+             // 1. Oculta overlay
+             staticDisplay.style.display = 'none';
+             // 2. Mostra elementos da câmera
+             document.getElementById("canvas").style.display = 'block';
+             document.getElementById("webcam").style.display = 'block';
+             // 3. Reinicia a câmera
+             init();
         });
     }
 });
