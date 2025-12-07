@@ -6,7 +6,7 @@ const SPEECH_INTERVAL = 2000;
 const CONFIDENCE_DRAW = 0.6; // Limiar para desenhar (visível na tela)
 const CONFIDENCE_SPEAK = 0.6; // Limiar para falar/análise estática
 let isDetecting = false; // Flag para prevenir chamadas de detecção concorrentes
-let lastUtterance = null; // 🚨 NOVO: Armazena a última utterance para evitar garbage collection
+let lastUtterance = null; // Armazena a última utterance para evitar garbage collection em mobile
 
 // Variáveis de Controle de Câmera
 let usandoCameraFrontal = false;
@@ -154,7 +154,7 @@ function speakObjects(predictions) {
              lastSpoken = sentence;
              lastTime = now;
              
-             // 🚨 CORREÇÃO: Armazena a referência para a utterance, evitando o descarte pelo GC
+             // CORREÇÃO: Armazena a referência para a utterance, evitando o descarte pelo GC
              lastUtterance = utterance; 
              
         } catch (e) {
@@ -193,7 +193,7 @@ async function analyzeStaticImage(imgElement, statusElement) {
         
         try {
              speechSynthesis.speak(utterance);
-             // 🚨 CORREÇÃO: Armazena a referência para a utterance.
+             // CORREÇÃO: Armazena a referência para a utterance.
              lastUtterance = utterance; 
         } catch (e) {
              console.warn("Speech synthesis failed or was interrupted.", e);
@@ -240,6 +240,33 @@ function exitStaticView() {
     document.getElementById("static-image-display").style.display = 'none';
     // Reinicia a câmera
     init(); 
+}
+
+// Função para reativar o motor de fala quando o app volta ao foco (visibilidade)
+function reativarAudio() {
+    // Verifica se a tela está visível
+    if (document.visibilityState === 'visible') {
+        // Cancela qualquer fala anterior
+        speechSynthesis.cancel();
+        
+        // Tenta falar uma string vazia ou muito curta para reativar o motor
+        const reactivateUtterance = new SpeechSynthesisUtterance(" "); 
+        reactivateUtterance.lang = 'en-US';
+
+        try {
+            speechSynthesis.speak(reactivateUtterance);
+            // Imediatamente cancela para que a string vazia não seja ouvida, mas o motor foi reativado.
+            speechSynthesis.cancel();
+            console.log("Audio context successfully reactivated.");
+        } catch (e) {
+            console.warn("Reactivation failed.", e);
+        }
+        
+        // Opcional: Reexecuta a função init() para garantir que a câmera e o loop de detecção estejam ativos
+        if (streamAtual && !streamAtual.active) {
+            init(); 
+        }
+    }
 }
 
 
@@ -336,6 +363,9 @@ document.addEventListener("DOMContentLoaded", () => {
             captureScreenAndDownload(); 
         });
     }
+
+    // 🚨 CORREÇÃO DE ÁUDIO FINAL: Listener para reativar o áudio quando a aba/app volta ao foco
+    document.addEventListener('visibilitychange', reativarAudio);
 });
 
 
