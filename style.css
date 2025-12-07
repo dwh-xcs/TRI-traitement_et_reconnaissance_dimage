@@ -1,0 +1,379 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #783A92;
+    overflow: hidden;
+}
+
+/* Área principal ocupando TELAS GRANDES + MOBILE */
+.camera-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: #783A92;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CÂMERA e CANVAS - COBRE TUDO e ficam sobrepostos */
+video, canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+    z-index: 1; /* O vídeo/canvas ficam na camada de baixo (1) */
+}
+
+canvas {
+    z-index: 2; /* O canvas de desenho fica ligeiramente acima do vídeo */
+}
+
+/* Barra superior/Cabeçalho - Mudança para alinhar logo, título e menu */
+.top-bar {
+    position: absolute;
+    top: 20px;
+    left: 25px;
+    right: 25px;
+    display: flex;
+    justify-content: space-between; /* Espaçamento entre Logo, Título e Menu */
+    align-items: center;
+    padding: 0 20px;
+    z-index: 10;
+}
+
+/* Título da Aplicação */
+.app-title {
+    color: #fff;
+    font-size: clamp(16px, 4vw, 24px);
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7); /* Para melhorar a visibilidade sobre a câmera */
+    flex-grow: 1; /* Permite que o título use o espaço central */
+    text-align: center;
+    /* Ajuste de margem para que o título fique no centro visual */
+    margin-left: -28px; /* Compensação de largura do ícone da logo e menu */
+}
+
+/* Wrapper genérico para ícones no cabeçalho */
+.icon-wrapper {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    z-index: 11; /* Acima do dropdown */
+    width: 28px; /* Garante que os ícones tenham largura fixa para o alinhamento do título */
+    height: 28px;
+}
+
+/* Estilo do ícone */
+.icon {
+    width: 28px;
+    height: 28px;
+    fill: #783A92; /* Alterado de #783A92 para #fff para melhor contraste no topo */
+    transition: opacity 0.2s;
+}
+
+/* Estilo da Logo (AGORA IMAGEM) */
+.logo-icon {
+    font-size: 0; 
+    position: relative;
+    justify-content: center;
+    width: 60px; /* Aumenta o wrapper para a imagem */
+    height: 60px;
+}
+
+.logo-image {
+    width: 150px; 
+    height: 150px; 
+    object-fit: contain;
+}
+
+/* Remove estilos de texto da logo antiga (manter para evitar conflito) */
+.wave-icon {
+    display: none;
+}
+
+/* MENU DROPDOWN */
+.menu-dropdown {
+    position: absolute;
+    top: 55px; /* Abaixo do ícone do menu */
+    right: 20px; /* POSICIONADO À DIREITA */
+    left: auto; /* Remove o alinhamento esquerdo anterior */
+    width: 180px;
+    background: rgba(120, 58, 146, 0.65); /* Fundo semi-transparente */
+    border-radius: 8px;
+    padding: 5px 0;
+    display: none; /* Inicialmente oculto */
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 9;
+    /* Animação de entrada */
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Mostra o menu quando a classe .open está ativa (JS) */
+.menu-dropdown.open {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.menu-item {
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.1s;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Caixa de transcrição/Status */
+.transcricao {
+    position: absolute;
+    bottom: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 700px;
+    background: rgba(120, 58, 146, 0.65);
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-align: center;
+    font-size: clamp(14px, 2.5vw, 20px);
+    color: #fff;
+    backdrop-filter: blur(12px);
+    z-index: 9;
+}
+
+/* Barra inferior */
+.bottom-bar {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 30px;
+    z-index: 10;
+}
+
+/* Botão de captura */
+.circle-btn {
+    width: clamp(60px, 12vw, 90px);
+    height: clamp(60px, 12vw, 90px);
+    border-radius: 50%;
+    border: 4px solid #fff;
+    background-color: transparent;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}
+
+.circle-btn::before {
+    content: "";
+    position: absolute;
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background-color: #fff;
+    opacity: 1;
+    transition: transform 0.15s ease;
+}
+
+/* Botões menores */
+.small-btn {
+    width: clamp(40px, 8vw, 60px);
+    height: clamp(40px, 8vw, 60px);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+}
+
+.bottom-icon {
+    width: clamp(18px, 4vw, 26px);
+    height: clamp(18px, 4vw, 26px);
+    fill: #783A92; /* Alterado de #783A92 para #fff para melhor contraste no fundo */
+    opacity: 1;
+}
+
+/* Estilo para a caixa delimitadora (gerado pelo JS) */
+.bounding-box {
+    border: 2px solid #783A92;
+    position: absolute;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+/* Container de visualização de imagem estática (inicialmente oculto) */
+.static-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(120, 58, 146, 0.8); /* Fundo escuro para destacar a imagem */
+    display: none; /* Começa oculto */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100; /* Deve estar acima de todos os outros elementos */
+    padding-top: 50px; /* Espaço para o botão fechar */
+}
+
+/* Imagem exibida */
+#analyzed-image {
+    max-width: 90%;
+    max-height: 70vh; /* Ocupa até 70% da altura da tela */
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(120, 58, 146, 0.8);
+    margin-bottom: 20px;
+}
+
+/* Status/Descrição para Imagem Estática */
+.static-status {
+    background: rgba(120, 58, 146, 0.8); /* Roxo semi-transparente */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: clamp(16px, 3vw, 22px);
+    font-weight: bold;
+    text-align: center;
+    z-index: 101;
+}
+
+/* Botão de Fechar */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 102;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/*
+ * RESPONSIVIDADE PARA DISPOSITIVOS MÓVEIS
+ * Aplicado em telas com largura máxima de 600px
+ */
+@media (max-width: 600px) {
+    /* CÂMERA e CANVAS - Ocupam toda a área, mas não devem influenciar o posicionamento da UI */
+    video, canvas {
+        z-index: 1;
+    }
+    canvas {
+        z-index: 2;
+        object-fit: cover;
+    }
+
+    /* Ajustes na Barra Superior */
+    .top-bar {
+        margin: 15px;
+        position: fixed; 
+        top: 0; 
+        left: 0;
+        right: 0;
+        /*background: rgba(0, 0, 0, 0.4); */
+        padding: 25px 25px;
+        height: 60px;
+        z-index: 11;
+        justify-content: space-between; 
+    }
+
+    /* Oculta o título principal em telas muito pequenas */
+    .app-title {
+        display: none;
+    }
+    
+    /* LOGO: Aumento do tamanho do contêiner da logo (de 40px para 55px) */
+    .logo-icon {
+        position: static; 
+        left: auto; 
+        transform: none; 
+        width: 55px;
+        height: 55px;
+        padding: 0;
+    }
+
+    /* Imagem da logo: Ajusta o tamanho da imagem para preencher o novo wrapper */
+    .logo-image {
+        width: 100px; 
+        height: 100px;
+        object-fit: contain;
+        transform: none; 
+    }
+
+    /* Redefine a largura do wrapper de ícone para manter o alinhamento do menu */
+    .icon-wrapper {
+        width: 40px; 
+        height: 40px;
+    }
+
+    /* Ajuste do ícone do menu para ficar na extrema direita */
+    .menu-icon {
+        position: static; 
+        right: auto;
+    }
+    
+    /* Ajusta o posicionamento do menu dropdown */
+    .menu-dropdown {
+        top: 80px; 
+        right: 15px;
+        width: 160px;
+    }
+    
+    /* Caixa de transcrição/Status */
+    .transcricao {
+        bottom: 120px;
+        width: 95%;
+        padding: 10px 15px;
+        font-size: 16px;
+    }
+
+    /* Barra Inferior */
+    .bottom-bar {
+        bottom: 15px;
+        padding: 0 10px;
+    }
+
+    /* Botões menores */
+    .small-btn {
+        width: 50px;
+        height: 50px;
+    }
+
+    /* Botão de captura */
+    .circle-btn {
+        width: 70px;
+        height: 70px;
+        border-width: 3px;
+    }
+}

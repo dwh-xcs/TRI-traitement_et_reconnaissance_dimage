@@ -1,2 +1,0 @@
-# TRI-traitement_et_reconnaissance_dimage
-Este sistema realiza processamento e reconhecimento de imagens com técnicas avançadas de Inteligência Artificial.  Ele é capaz de analisar, interpretar e extrair informações visuais de imagens utilizando algoritmos modernos e eficientes. Entre suas principais funcionalidades estão o reconhecimento de padrões visuais, detecção e classificação de objetos, além da transformação de imagens para diferentes formatos ou realces.

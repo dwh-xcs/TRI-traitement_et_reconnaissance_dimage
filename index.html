@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traitement et reconnaissance d'image</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.16.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+</head>
+<body>
+
+  <div class="camera-wrapper">
+    <video id="webcam" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+
+    <div id="static-image-display" class="static-image-overlay">
+        <img id="analyzed-image" src="" alt="Imagem selecionada para análise">
+        <div id="static-status" class="static-status">Aguardando imagem...</div>
+        <button id="close-static-view" class="close-btn">X</button>
+    </div>
+
+    <div class="top-bar">
+      
+      <div class="icon-wrapper logo-icon">
+        <img id="tri-logo" src="img/logo-tri.png" alt="Logo TRI" class="logo-image">
+      </div>
+      
+      <h1 class="app-title">🎥 Object Detector with TensorFlow.js</h1>
+
+      <div id="menu-btn" class="icon-wrapper menu-icon" title="Menu">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+      </div>
+
+      <div id="menu-dropdown" class="menu-dropdown">
+        <a href="#" class="menu-item">About application</a>
+        <a href="#" class="menu-item">Contact</a>
+      </div>
+
+    </div>
+
+    <div class="transcricao" id="status">
+      Loading model...
+    </div>
+
+    <div class="bottom-bar">
+      <div id="gallery-btn" class="small-btn" title="Open Gallery">
+        <svg class="bottom-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M21 19V5H3v14h18zM3 3h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+          <path d="M10 12l2 2 3-3 4 4H5z"/>
+        </svg>
+      </div>
+
+      <input type="file" id="image-upload" accept="image/*" style="display: none;">
+
+      <!-- <button id="captureBtn" class="circle-btn" title="Detecção Ativa"></button> -->
+
+      <div id="toggleCamera" class="small-btn" title="Alternar Câmera">
+        <svg class="bottom-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 .46-.06.9-.18 1.32l1.46 1.46A6.98 6.98 0 0 0 19 13c0-3.87-3.13-7-7-7zm-7.82.68A6.98 6.98 0 0 0 5 11c0 3.87 3.13 7 7 7v3l4-4-4-4v3c-2.76 0-5-2.24-5-5 0-.46.06-.9.18-1.32L3.72 6.68z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
