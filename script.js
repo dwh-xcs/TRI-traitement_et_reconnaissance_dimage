@@ -134,7 +134,11 @@ function speakObjects(predictions) {
     const now = Date.now();
     
     // Verifica se o tempo passou E se o motor de fala não está atualmente ocupado
-    if (sentence !== lastSpoken && now - lastTime > SPEECH_INTERVAL && !speechSynthesis.speaking) {
+    if (sentence !== lastSpoken && now - lastTime > SPEECH_INTERVAL) {
+        
+        // 🚨 NOVO: CANCELA QUALQUER FALA ATIVA OU PENDENTE
+        speechSynthesis.cancel(); 
+        
         const utterance = new SpeechSynthesisUtterance(sentence);
         utterance.lang = 'en-US'; 
         
@@ -174,6 +178,8 @@ async function analyzeStaticImage(imgElement, statusElement) {
         const sentence = "I see " + names.join(" and ");
         const utterance = new SpeechSynthesisUtterance(sentence);
         utterance.lang = 'en-US'; 
+
+        speechSynthesis.cancel();
         
         try {
              speechSynthesis.speak(utterance);
