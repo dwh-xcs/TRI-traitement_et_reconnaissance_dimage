@@ -286,6 +286,11 @@ canvas {
  */
 @media (max-width: 600px) {
     /* CÂMERA e CANVAS - Ocupam toda a área, mas não devem influenciar o posicionamento da UI */
+    body {
+        padding-top: env(safe-area-inset-top, 20px);
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+    
     video, canvas {
         z-index: 1;
     }
@@ -352,16 +357,23 @@ canvas {
     
     /* Caixa de transcrição/Status */
     .transcricao {
-        bottom: 120px;
+        position: fixed; /* Usa 'fixed' para anular problemas com o scroll e vh */
+        /* bottom: 120px + (área segura) */
+        bottom: calc(120px + env(safe-area-inset-bottom)); 
         width: 95%;
         padding: 10px 15px;
         font-size: 16px;
     }
 
-    /* Barra Inferior */
+    /* Barra Inferior: CORREÇÃO DO SUMIÇO DOS BOTÕES */
     .bottom-bar {
-        bottom: 15px;
+        position: fixed; /* Usa 'fixed' para anular problemas com o scroll e vh */
+        /* bottom: 15px + (área segura) */
+        bottom: calc(15px + env(safe-area-inset-bottom)); 
+        left: 0;
+        right: 0;
         padding: 0 10px;
+        z-index: 10;
     }
 
     /* Botões menores */
