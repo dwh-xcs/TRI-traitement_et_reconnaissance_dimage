@@ -1,20 +1,25 @@
+/* =========================================
+   RESET E CONFIGURAÇÕES GLOBAIS
+   ========================================= */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    box-sizing: border-box; /* Garante que padding não aumente a largura dos elementos */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; /* Fontes nativas do sistema (performático) */
 }
 
 html, body {
     width: 100%;
     height: 100%;
-    background-color: #783A92;
-    overflow: hidden;
+    background-color: #783A92; /* Cor de fundo de fallback (aparece se o vídeo demorar) */
+    overflow: hidden; /* Impede barras de rolagem (app com sensação nativa) */
 }
 
-/* Área principal ocupando TELAS GRANDES + MOBILE */
+/* =========================================
+   CAMADA DE VÍDEO E CANVAS (FUNDO)
+   ========================================= */
 .camera-wrapper {
-    position: relative;
+    position: relative; /* Contexto de posicionamento para os filhos absolutos */
     width: 100vw;
     height: 100vh;
     background-color: #783A92;
@@ -23,105 +28,107 @@ html, body {
     align-items: center;
 }
 
-/* CÂMERA e CANVAS - COBRE TUDO e ficam sobrepostos */
+/* Configuração crítica para sobreposição */
 video, canvas {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    position: absolute;
-    inset: 0;
-    z-index: 1; /* O vídeo/canvas ficam na camada de baixo (1) */
+    object-fit: cover; /* ATENÇÃO: 'cover' preenche a tela, mas pode desalinhar o desenho da IA se a proporção da tela for diferente da câmera */
+    position: absolute; /* Remove do fluxo normal para sobrepor */
+    inset: 0; /* Atalho para top:0, right:0, bottom:0, left:0 */
+    z-index: 1; /* Camada base */
 }
 
 canvas {
-    z-index: 2; /* O canvas de desenho fica ligeiramente acima do vídeo */
+    z-index: 2; /* Fica acima do vídeo para desenhar os quadrados verdes */
 }
 
-/* Barra superior/Cabeçalho - Mudança para alinhar logo, título e menu */
+/* =========================================
+   BARRA SUPERIOR (HEADER)
+   ========================================= */
 .top-bar {
     position: absolute;
     top: 20px;
     left: 25px;
     right: 25px;
-    display: flex;
-    justify-content: space-between; /* Espaçamento entre Logo, Título e Menu */
+    display: flex; /* Flexbox para alinhar Logo (esq), Título (centro), Menu (dir) */
+    justify-content: space-between; 
     align-items: center;
     padding: 0 20px;
-    z-index: 10;
+    z-index: 10; /* Camada de UI (acima do vídeo/canvas) */
 }
 
-/* Título da Aplicação */
 .app-title {
     color: #fff;
-    font-size: clamp(16px, 4vw, 24px);
+    /* Tamanho de fonte fluido: mínimo 16px, ideal 4vw, máximo 24px */
+    font-size: clamp(16px, 4vw, 24px); 
     font-weight: bold;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7); /* Para melhorar a visibilidade sobre a câmera */
-    flex-grow: 1; /* Permite que o título use o espaço central */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7); /* Contraste para leitura sobre vídeo claro */
+    flex-grow: 1; /* Ocupa todo espaço disponível central */
     text-align: center;
-    /* Ajuste de margem para que o título fique no centro visual */
-    margin-left: -28px; /* Compensação de largura do ícone da logo e menu */
+    margin-left: -28px; /* Truque visual para centralizar ignorando a largura dos ícones laterais */
 }
 
-/* Wrapper genérico para ícones no cabeçalho */
+/* Wrapper para manter tamanho de toque consistente nos ícones */
 .icon-wrapper {
     display: flex;
     align-items: center;
     cursor: pointer;
-    z-index: 11; /* Acima do dropdown */
-    width: 28px; /* Garante que os ícones tenham largura fixa para o alinhamento do título */
+    z-index: 11; /* Garante que o clique funcione (acima de tudo) */
+    width: 28px;
     height: 28px;
 }
 
-/* Estilo do ícone */
 .icon {
     width: 28px;
     height: 28px;
-    fill: #783A92; /* Alterado de #783A92 para #fff para melhor contraste no topo */
+    fill: #783A92; /* Cor padrão do ícone SVG */
     transition: opacity 0.2s;
 }
 
-/* Estilo da Logo (AGORA IMAGEM) */
+/* Ajustes específicos para a Logo (Imagem) */
 .logo-icon {
     font-size: 0; 
     position: relative;
     justify-content: center;
-    width: 60px; /* Aumenta o wrapper para a imagem */
+    width: 60px; /* Área de toque maior */
     height: 60px;
 }
 
 .logo-image {
     width: 150px; 
     height: 150px; 
-    object-fit: contain;
+    object-fit: contain; /* Garante que a logo não distorça */
 }
 
-/* Remove estilos de texto da logo antiga (manter para evitar conflito) */
 .wave-icon {
-    display: none;
+    display: none; /* Classe legada ocultada */
 }
 
-/* MENU DROPDOWN */
+/* =========================================
+   MENU DROPDOWN
+   ========================================= */
 .menu-dropdown {
     position: absolute;
-    top: 55px; /* Abaixo do ícone do menu */
-    right: 20px; /* POSICIONADO À DIREITA */
-    left: auto; /* Remove o alinhamento esquerdo anterior */
+    top: 55px;
+    right: 20px; /* Alinhado à direita */
+    left: auto;
     width: 180px;
-    background: rgba(120, 58, 146, 0.65); /* Fundo semi-transparente */
+    background: rgba(120, 58, 146, 0.65); /* Fundo translúcido */
     border-radius: 8px;
     padding: 5px 0;
-    display: none; /* Inicialmente oculto */
+    display: none; /* Estado inicial: Oculto */
     flex-direction: column;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); /* Efeito de vidro fosco (Glassmorphism) */
     border: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 9;
-    /* Animação de entrada */
+    
+    /* Prepara animação */
     transform: translateY(-10px);
     opacity: 0;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-/* Mostra o menu quando a classe .open está ativa (JS) */
+/* Classe ativada via JavaScript */
 .menu-dropdown.open {
     display: flex;
     opacity: 1;
@@ -140,12 +147,14 @@ canvas {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Caixa de transcrição/Status */
+/* =========================================
+   ÁREA DE STATUS / TRANSCRIÇÃO
+   ========================================= */
 .transcricao {
     position: absolute;
-    bottom: 140px;
+    bottom: 140px; /* Posicionado acima da barra de controles */
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%); /* Centralização perfeita horizontal */
     width: 90%;
     max-width: 700px;
     background: rgba(120, 58, 146, 0.65);
@@ -158,20 +167,22 @@ canvas {
     z-index: 9;
 }
 
-/* Barra inferior */
+/* =========================================
+   BARRA INFERIOR (CONTROLES)
+   ========================================= */
 .bottom-bar {
     position: absolute;
     bottom: 30px;
     left: 0;
     right: 0;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-around; /* Distribui os botões igualmente */
     align-items: center;
     padding: 0 30px;
     z-index: 10;
 }
 
-/* Botão de captura */
+/* Botão Central (Captura) - Estilo decorativo */
 .circle-btn {
     width: clamp(60px, 12vw, 90px);
     height: clamp(60px, 12vw, 90px);
@@ -192,11 +203,10 @@ canvas {
     height: 60%;
     border-radius: 50%;
     background-color: #fff;
-    opacity: 1;
     transition: transform 0.15s ease;
 }
 
-/* Botões menores */
+/* Botões Laterais (Galeria / Câmera) */
 .small-btn {
     width: clamp(40px, 8vw, 60px);
     height: clamp(40px, 8vw, 60px);
@@ -213,47 +223,47 @@ canvas {
 .bottom-icon {
     width: clamp(18px, 4vw, 26px);
     height: clamp(18px, 4vw, 26px);
-    fill: #783A92; /* Alterado de #783A92 para #fff para melhor contraste no fundo */
+    fill: #783A92; 
     opacity: 1;
 }
 
-/* Estilo para a caixa delimitadora (gerado pelo JS) */
+/* Classes geradas dinamicamente pelo JS (não estão no HTML base) */
 .bounding-box {
     border: 2px solid #783A92;
     position: absolute;
     box-sizing: border-box;
-    pointer-events: none;
+    pointer-events: none; /* Permite clicar "através" da caixa */
 }
 
-/* Container de visualização de imagem estática (inicialmente oculto) */
+/* =========================================
+   MODO IMAGEM ESTÁTICA (OVERLAY)
+   ========================================= */
 .static-image-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(120, 58, 146, 0.8); /* Fundo escuro para destacar a imagem */
+    background-color: rgba(120, 58, 146, 0.8);
     display: none; /* Começa oculto */
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 100; /* Deve estar acima de todos os outros elementos */
-    padding-top: 50px; /* Espaço para o botão fechar */
+    z-index: 100; /* Z-Index altíssimo para cobrir tudo */
+    padding-top: 50px;
 }
 
-/* Imagem exibida */
 #analyzed-image {
     max-width: 90%;
-    max-height: 70vh; /* Ocupa até 70% da altura da tela */
+    max-height: 70vh;
     object-fit: contain;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(120, 58, 146, 0.8);
     margin-bottom: 20px;
 }
 
-/* Status/Descrição para Imagem Estática */
 .static-status {
-    background: rgba(120, 58, 146, 0.8); /* Roxo semi-transparente */
+    background: rgba(120, 58, 146, 0.8);
     color: white;
     padding: 10px 20px;
     border-radius: 20px;
@@ -263,7 +273,6 @@ canvas {
     z-index: 101;
 }
 
-/* Botão de Fechar */
 .close-btn {
     position: absolute;
     top: 10px;
@@ -280,12 +289,11 @@ canvas {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-/*
- * RESPONSIVIDADE PARA DISPOSITIVOS MÓVEIS
- * Aplicado em telas com largura máxima de 600px
- */
+/* =========================================
+   RESPONSIVIDADE (MOBILE < 600px)
+   ========================================= */
 @media (max-width: 600px) {
-    /* CÂMERA e CANVAS - Ocupam toda a área, mas não devem influenciar o posicionamento da UI */
+    /* Ajuste para áreas seguras do iPhone (Notch/Dynamic Island) */
     body {
         padding-top: env(safe-area-inset-top, 20px);
         padding-bottom: env(safe-area-inset-bottom, 20px);
@@ -299,93 +307,59 @@ canvas {
         object-fit: cover;
     }
 
-    /* Ajustes na Barra Superior */
+    /* Barra superior fixa no mobile */
     .top-bar {
         margin: 15px;
         position: fixed; 
         top: 0; 
         left: 0;
         right: 0;
-        /*background: rgba(0, 0, 0, 0.4); */
         padding: 25px 25px;
         height: 60px;
         z-index: 11;
         justify-content: space-between; 
     }
 
-    /* Oculta o título principal em telas muito pequenas */
+    /* Esconde título no mobile para limpar a tela */
     .app-title {
         display: none;
     }
     
-    /* LOGO: Aumento do tamanho do contêiner da logo (de 40px para 55px) */
+    /* Aumenta a logo para compensar falta do título */
     .logo-icon {
         position: static; 
-        left: auto; 
-        transform: none; 
         width: 55px;
         height: 55px;
-        padding: 0;
     }
 
-    /* Imagem da logo: Ajusta o tamanho da imagem para preencher o novo wrapper */
     .logo-image {
         width: 100px; 
         height: 100px;
-        object-fit: contain;
-        transform: none; 
     }
 
-    /* Redefine a largura do wrapper de ícone para manter o alinhamento do menu */
-    .icon-wrapper {
-        width: 40px; 
-        height: 40px;
-    }
-
-    /* Ajuste do ícone do menu para ficar na extrema direita */
-    .menu-icon {
-        position: static; 
-        right: auto;
-    }
-    
-    /* Ajusta o posicionamento do menu dropdown */
+    /* Reposiciona Dropdown */
     .menu-dropdown {
         top: 80px; 
         right: 15px;
         width: 160px;
     }
     
-    /* Caixa de transcrição/Status */
+    /* Reposiciona caixa de texto com cálculo de área segura */
     .transcricao {
-        position: fixed; /* Usa 'fixed' para anular problemas com o scroll e vh */
-        /* bottom: 120px + (área segura) */
+        position: fixed; 
         bottom: calc(120px + env(safe-area-inset-bottom)); 
         width: 95%;
         padding: 10px 15px;
         font-size: 16px;
     }
 
-    /* Barra Inferior: CORREÇÃO DO SUMIÇO DOS BOTÕES */
+    /* Reposiciona barra inferior com cálculo de área segura */
     .bottom-bar {
-        position: fixed; /* Usa 'fixed' para anular problemas com o scroll e vh */
-        /* bottom: 15px + (área segura) */
+        position: fixed;
         bottom: calc(15px + env(safe-area-inset-bottom)); 
         left: 0;
         right: 0;
         padding: 0 10px;
         z-index: 10;
-    }
-
-    /* Botões menores */
-    .small-btn {
-        width: 50px;
-        height: 50px;
-    }
-
-    /* Botão de captura */
-    .circle-btn {
-        width: 70px;
-        height: 70px;
-        border-width: 3px;
     }
 }
